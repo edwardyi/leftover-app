@@ -1,0 +1,48 @@
+# Node.js
+node_modules/
+
+# Expo/React Native
+.expo/
+.expo-shared/
+dist/
+web-build/
+*.tsbuildinfo
+
+# Native/Signing
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# Debug/Log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+*.log
+
+# macOS/Linux/OS
+.DS_Store
+.idea/
+*.pem
+
+# VSCode/IDE
+.vscode/
+
+# Local env
+.env
+.env.*
+.env*.local
+
+# App example
+app-example
+
+# Expo/React Native build
+build/
+
+# Others
+expo-env.d.ts 

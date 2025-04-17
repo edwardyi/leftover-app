@@ -1,0 +1,12 @@
+key,zhTW,zhCN,en
+title,即期品地圖服務,临期品地图服务,Expiring Products Map Service
+getLocation,取得目前位置,获取当前位置,Get Current Location
+distance,距離 (公里),距离 (公里),Distance (km)
+price,價格上限,价格上限,Max Price
+category,類別,类别,Category
+all,全部,全部,All
+productName,商品名稱,商品名称,Product Name
+productPrice,價格,价格,Price
+productDistance,距離,距离,Distance
+currentPosition,目前位置,当前位置,Current Position
+km,公里,公里,km

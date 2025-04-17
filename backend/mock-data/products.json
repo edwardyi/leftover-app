@@ -1,0 +1,5 @@
+{"products":[
+    { "id": 1, "name": "麵包", "price": 35, "distance": 0.5, "category": "麵包", "latitude": 25.034, "longitude": 121.564, "svgUrl": "https://www.svgrepo.com/show/353655/bread.svg" },
+    { "id": 2, "name": "牛奶", "price": 50, "distance": 1.2, "category": "牛奶", "latitude": 25.037, "longitude": 121.561, "svgUrl": "https://www.svgrepo.com/show/353803/milk.svg" },
+    { "id": 3, "name": "蛋糕", "price": 80, "distance": 2.5, "category": "麵包", "latitude": 25.032, "longitude": 121.568, "svgUrl": "https://www.svgrepo.com/show/353899/cake.svg" }
+]}
