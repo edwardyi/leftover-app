@@ -3,9 +3,12 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const csv = require('csv-parser');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const SECRET = 'your_secret_key';
 
 app.use(cors());
 app.use(express.json());
@@ -44,7 +47,6 @@ app.get('/api/products', (req, res) => {
   if (category) {
     products = products.filter(p => p.category === category);
   }
-
   res.json(products);
 });
 
@@ -74,14 +76,14 @@ app.get('/api/products/:id', (req, res) => {
   res.json(product);
 });
 
+
 app.get('/api/locations', (req, res) => {
   const dataPath = path.join(__dirname, 'mock-data', 'locations.json');
   const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
   res.json(data.locations);
 });
 
-// 新增商品
-app.post('/api/products', (req, res) => {
+app.post('/api/products', authMiddleware, (req, res) => {
   const dataPath = path.join(__dirname, 'mock-data', 'products.json');
   const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
   const products = data.products;
@@ -92,8 +94,7 @@ app.post('/api/products', (req, res) => {
   res.status(201).json(newProduct);
 });
 
-// 更新商品
-app.put('/api/products/:id', (req, res) => {
+app.put('/api/products/:id', authMiddleware, (req, res) => {
   const dataPath = path.join(__dirname, 'mock-data', 'products.json');
   const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
   const products = data.products;
@@ -106,7 +107,7 @@ app.put('/api/products/:id', (req, res) => {
 });
 
 // 刪除商品
-app.delete('/api/products/:id', (req, res) => {
+app.delete('/api/products/:id', authMiddleware, (req, res) => {
   const dataPath = path.join(__dirname, 'mock-data', 'products.json');
   const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
   let products = data.products;
@@ -118,8 +119,15 @@ app.delete('/api/products/:id', (req, res) => {
   res.json(deleted);
 });
 
-// 新增商品庫存
-app.post('/api/inventory', (req, res) => {
+// 庫存列表
+app.get('/api/inventory', (req, res) => {
+  const dataPath = path.join(__dirname, 'mock-data', 'inventory.json');
+  const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+  res.json(data.inventory);
+});
+
+// 新增庫存
+app.post('/api/inventory', authMiddleware, (req, res) => {
   const dataPath = path.join(__dirname, 'mock-data', 'inventory.json');
   const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
   const inventory = data.inventory;
@@ -134,8 +142,8 @@ app.post('/api/inventory', (req, res) => {
   res.status(201).json(newItem);
 });
 
-// 更新商品庫存
-app.put('/api/inventory/:productId', (req, res) => {
+// 更新庫存
+app.put('/api/inventory/:productId', authMiddleware, (req, res) => {
   const dataPath = path.join(__dirname, 'mock-data', 'inventory.json');
   const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
   const inventory = data.inventory;
@@ -148,8 +156,8 @@ app.put('/api/inventory/:productId', (req, res) => {
   res.json(updated);
 });
 
-// 刪除商品庫存
-app.delete('/api/inventory/:productId', (req, res) => {
+// 刪除庫存
+app.delete('/api/inventory/:productId', authMiddleware, (req, res) => {
   const dataPath = path.join(__dirname, 'mock-data', 'inventory.json');
   const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
   let inventory = data.inventory;
@@ -161,8 +169,24 @@ app.delete('/api/inventory/:productId', (req, res) => {
   res.json(deleted);
 });
 
+// 用戶列表
+app.get('/api/users', authMiddleware, (req, res) => {
+  const dataPath = path.join(__dirname, 'mock-data', 'users.json');
+  const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+  res.json(data.users);
+});
+
+// 取得單一用戶
+app.get('/api/users/:id', authMiddleware, (req, res) => {
+  const dataPath = path.join(__dirname, 'mock-data', 'users.json');
+  const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+  const user = data.users.find(u => u.id === Number(req.params.id));
+  if (!user) return res.status(404).json({ error: 'Not found' });
+  res.json(user);
+});
+
 // 新增用戶
-app.post('/api/users', (req, res) => {
+app.post('/api/users', authMiddleware, (req, res) => {
   const dataPath = path.join(__dirname, 'mock-data', 'users.json');
   const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
   const users = data.users;
@@ -174,7 +198,7 @@ app.post('/api/users', (req, res) => {
 });
 
 // 更新用戶
-app.put('/api/users/:id', (req, res) => {
+app.put('/api/users/:id', authMiddleware, (req, res) => {
   const dataPath = path.join(__dirname, 'mock-data', 'users.json');
   const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
   const users = data.users;
@@ -186,8 +210,7 @@ app.put('/api/users/:id', (req, res) => {
   res.json(updated);
 });
 
-// 刪除用戶
-app.delete('/api/users/:id', (req, res) => {
+app.delete('/api/users/:id', authMiddleware, (req, res) => {
   const dataPath = path.join(__dirname, 'mock-data', 'users.json');
   const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
   let users = data.users;
@@ -199,29 +222,39 @@ app.delete('/api/users/:id', (req, res) => {
   res.json(deleted);
 });
 
-// 取得所有商品庫存
-app.get('/api/inventory', (req, res) => {
-  const dataPath = path.join(__dirname, 'mock-data', 'inventory.json');
-  const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
-  res.json(data.inventory);
-});
-
-// 取得單一用戶
-app.get('/api/users/:id', (req, res) => {
+// 登入
+app.post('/api/login', (req, res) => {
+  const { email, password } = req.body;
   const dataPath = path.join(__dirname, 'mock-data', 'users.json');
   const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
-  const user = data.users.find(u => u.id === Number(req.params.id));
-  if (!user) return res.status(404).json({ error: 'Not found' });
-  res.json(user);
+  const user = data.users.find(u => u.email === email && u.isAdmin);
+  if (!user) return res.status(401).json({ error: 'Unauthorized' });
+  bcrypt.compare(password, user.password, (err, result) => {
+    if (result) {
+      const token = jwt.sign({ id: user.id, email: user.email, isAdmin: user.isAdmin }, SECRET, { expiresIn: '2h' });
+      return res.json({ token });
+    }
+    res.status(401).json({ error: 'Unauthorized' });
+  });
 });
 
-// 取得所有用戶
-app.get('/api/users', (req, res) => {
-  const dataPath = path.join(__dirname, 'mock-data', 'users.json');
-  const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
-  res.json(data.users);
-});
+// 驗證 token
+function authMiddleware(req, res, next) {
+  const auth = req.headers.authorization;
+  if (!auth || !auth.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
+  const token = auth.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, SECRET);
+    req.user = decoded;
+    next();
+  } catch (e) {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+}
 
+// 啟動伺服器
 app.listen(PORT, () => {
   console.log(`Mock API server running on port ${PORT}`);
 });

@@ -1,6 +1,18 @@
 {
   "users": [
-    { "id": 1, "name": "小明", "email": "ming@example.com" },
-    { "id": 2, "name": "小美", "email": "mei@example.com" }
+    {
+      "id": 1,
+      "name": "管理者",
+      "email": "admin@example.com",
+      "password": "$2b$10$iPNPROTpvKknypreJbGrv.LDVydQ5/XkQ3lu918X8ZUvzYRn5qYiq",
+      "isAdmin": true
+    },
+    {
+      "id": 2,
+      "name": "小美",
+      "email": "mei@example.com",
+      "password": "$2b$10$iPNPROTpvKknypreJbGrv.LDVydQ5/XkQ3lu918X8ZUvzYRn5qYiq",
+      "isAdmin": false
+    }
   ]
 } 
