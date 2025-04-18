@@ -1,0 +1,7 @@
+{
+  "inventory": [
+    { "productId": 1, "stock": 10 },
+    { "productId": 2, "stock": 5 },
+    { "productId": 3, "stock": 0 }
+  ]
+} 

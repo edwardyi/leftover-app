@@ -52,6 +52,8 @@ npm start
 ```
 啟動後瀏覽器會自動開啟 http://localhost:3000
 
+![frontend](images/photo_2025-04-18_08-41-09.jpg)
+
 ### 3. 功能驗證
 - 地圖會顯示台北市預設位置
 - 點擊「取得目前位置」可顯示你的 GPS 定位

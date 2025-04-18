@@ -1,0 +1,6 @@
+{
+  "locations": [
+    { "id": 1, "name": "台北超市", "latitude": 25.033, "longitude": 121.565 },
+    { "id": 2, "name": "信義便利店", "latitude": 25.037, "longitude": 121.561 }
+  ]
+} 
