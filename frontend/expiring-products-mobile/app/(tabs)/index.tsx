@@ -89,6 +89,16 @@ export default function HomeScreen() {
     });
   };
 
+  const centerToProduct = (lat: number, lng: number) => {
+    setRegion({
+      latitude: lat,
+      longitude: lng,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    });
+    setTab('map');
+  };
+
   // 條件渲染，Web 顯示提示
   if (Platform.OS === 'web') {
     return (
@@ -161,14 +171,17 @@ export default function HomeScreen() {
         <ScrollView style={styles.listWrap}>
           {filteredProducts.length === 0 && <Text style={{ textAlign: 'center', marginTop: 20 }}>無商品</Text>}
           {filteredProducts.map((p) => (
-            <View key={p.id} style={styles.listItem}>
+            <TouchableOpacity key={p.id} style={styles.listItem} onPress={() => centerToProduct(p.latitude, p.longitude)}>
               <Image source={{ uri: p.svgUrl }} style={{ width: 36, height: 36, marginRight: 10 }} />
               <View style={{ flex: 1 }}>
                 <Text style={{ fontWeight: 'bold' }}>{p.name}</Text>
                 <Text>{t('productPrice')}: {p.price}</Text>
                 <Text>{t('productDistance')}: {getDistanceFromLatLonInKm(region.latitude, region.longitude, p.latitude, p.longitude).toFixed(2)} {t('km')}</Text>
               </View>
-            </View>
+              <TouchableOpacity onPress={(e) => { e.stopPropagation(); centerToProduct(p.latitude, p.longitude); }} style={styles.centerBtn}>
+                <Text style={{ color: '#007aff' }}>定位</Text>
+              </TouchableOpacity>
+            </TouchableOpacity>
           ))}
         </ScrollView>
       )}
@@ -266,5 +279,14 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     alignItems: 'center',
+  },
+  centerBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderWidth: 1,
+    borderColor: '#007aff',
+    borderRadius: 6,
+    marginLeft: 8,
+    backgroundColor: '#e6f0ff',
   },
 });

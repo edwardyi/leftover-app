@@ -1,5 +1,5 @@
-import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import React, { useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -12,8 +12,17 @@ const getProductIcon = (svgUrl) =>
     className: 'product-marker-icon',
   });
 
-const MapView = ({ userPosition, products = [] }) => (
-  <MapContainer center={userPosition ? [userPosition.lat, userPosition.lng] : [25.033964, 121.564468]} zoom={13} style={{ height: '400px', width: '100%' }}>
+function CenterMap({ center }) {
+  const map = useMap();
+  useEffect(() => {
+    if (center) map.setView(center);
+  }, [center, map]);
+  return null;
+}
+
+const MapView = ({ userPosition, products = [], center }) => (
+  <MapContainer center={center || [25.033964, 121.564468]} zoom={13} style={{ height: '400px', width: '100%' }}>
+    <CenterMap center={center} />
     <TileLayer
       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

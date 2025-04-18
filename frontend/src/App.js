@@ -13,6 +13,7 @@ function App() {
   const [products, setProducts] = useState([]);
   const { t, i18n } = useTranslation();
   const [tab, setTab] = useState('list'); // 響應式分頁
+  const [mapCenter, setMapCenter] = useState([25.033964, 121.564468]);
 
   useEffect(() => {
     // 向後端取得商品資料
@@ -76,8 +77,8 @@ function App() {
         </div>
         <div className="grid md:grid-cols-2 gap-6">
           {/* 手機分頁顯示，桌機並排 */}
-          <div className={"" + (tab === 'list' || window.innerWidth >= 768 ? '' : 'hidden')}> <ProductList products={filteredProducts} t={t} /> </div>
-          <div className={"" + (tab === 'map' || window.innerWidth >= 768 ? '' : 'hidden')}> <MapView userPosition={userPosition} products={filteredProducts} t={t} /> </div>
+          <div className={"" + (tab === 'list' || window.innerWidth >= 768 ? '' : 'hidden')}> <ProductList products={filteredProducts} t={t} onCenter={(lat, lng) => setMapCenter([lat, lng])} mapCenter={mapCenter} /> </div>
+          <div className={"" + (tab === 'map' || window.innerWidth >= 768 ? '' : 'hidden')}> <MapView userPosition={userPosition} products={filteredProducts} t={t} center={mapCenter} /> </div>
         </div>
       </div>
     </div>
