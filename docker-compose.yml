@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  pocketbase:
+    image: alpine:3.18
+    container_name: pocketbase
+    working_dir: /pb
+    command: ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090"]
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./backend/pb_data:/pb/pb_data
+      - ./backend/pocketbase:/pb
+    entrypoint: ["/bin/sh", "-c", "if [ ! -f /pb/pocketbase ]; then wget https://github.com/pocketbase/pocketbase/releases/download/v0.21.0/pocketbase_0.21.0_linux_amd64.zip -O /pb/pb.zip && unzip /pb/pb.zip -d /pb; fi; /pb/pocketbase serve --http=0.0.0.0:8090"]
+
+  backend:
+    build:
+      context: ./backend
+    container_name: backend
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - pocketbase
+    tty: true
+    # 可在此自訂啟動指令，例如 go run sync_to_pocketbase.go
+    # command: ["go", "run", "sync_to_pocketbase.go"]
+
+# 如有前端服務可加上 frontend:
+#  frontend:
+#    build:
+#      context: ./frontend
+#    ports:
+#      - "3000:3000"
+#    volumes:
+#      - ./frontend:/app
+#    depends_on:
+#      - backend 

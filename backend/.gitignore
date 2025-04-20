@@ -1,0 +1,30 @@
+# PocketBase 資料與執行檔
+pb_data/
+pocketbase/
+
+# Go build 產物
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Node.js
+node_modules/
+
+# dotenv
+.env
+
+# VSCode/IDE
+.vscode/
+.idea/
+
+# 暫存檔
+*.log
+*.tmp
+.DS_Store
+
+# 其他
+mock-data/*_pb.json 
